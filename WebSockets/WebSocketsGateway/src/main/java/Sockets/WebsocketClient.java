@@ -12,15 +12,13 @@ import java.util.concurrent.CompletableFuture;
 public class WebsocketClient implements WebSocket.Listener {
     private WebSocket server = null;
 
-    // Send down-link message to device
-    // Must be in Json format according to https://github.com/ihavn/IoT_Semester_project/blob/master/LORA_NETWORK_SERVER.md
+
     public void sendDownLink(String jsonTelegram) {
         server.sendText(jsonTelegram,true);
     }
 
 
-    // E.g. url: "wss://iotnet.teracom.dk/app?token=??????????????????????????????????????????????="
-    // Substitute ????????????????? with the token you have been given
+
     public WebsocketClient(String url) {
         HttpClient client = HttpClient.newHttpClient();
         CompletableFuture<WebSocket> ws = client.newWebSocketBuilder()
@@ -31,7 +29,7 @@ public class WebsocketClient implements WebSocket.Listener {
 
     //onOpen()
     public void onOpen(WebSocket webSocket) {
-        // This WebSocket will invoke onText, onBinary, onPing, onPong or onClose methods on the associated listener (i.e. receive methods) up to n more times
+
         webSocket.request(1);
         System.out.println("WebSocket Listener has been opened for requests.");
     }
