@@ -12,6 +12,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      
 
     - name: Set up JDK
       uses: actions/setup-java@v1
@@ -20,6 +21,8 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean install
+      working-directory: WebSockets/WebSocketsGateway
 
     - name: Run tests
       run: mvn test
+      working-directory: WebSockets/WebSocketsGateway
