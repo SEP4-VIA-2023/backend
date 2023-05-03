@@ -21,7 +21,7 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean install
-      working-directory: backend\WebSockets\WebSocketsGateway
+      working-directory: WebSockets\WebSocketsGateway
 
     - name: Run tests
       run: mvn test
