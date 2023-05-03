@@ -1,0 +1,21 @@
+syntax = "proto3";
+option csharp_namespace = "Proto";
+
+package proto;
+
+service UserService {
+  rpc AddUser (UserObj) returns (UserObj);
+  rpc GetUser (Username) returns (UserObj);
+
+}
+
+message UserObj {
+  int32 id = 1;
+  string username = 2;
+  string password = 3;
+
+}
+
+message Username {
+  string username = 1;
+}
