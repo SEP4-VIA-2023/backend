@@ -12,6 +12,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      
+  
+    -name: List files
+      run: ls -a
 
     - name: Set up JDK
       uses: actions/setup-java@v1
