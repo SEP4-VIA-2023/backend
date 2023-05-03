@@ -13,6 +13,7 @@ message UserObj {
   int32 id = 1;
   string username = 2;
   string password = 3;
+  string email = 4;
 
 }
 

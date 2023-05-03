@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -16,9 +17,12 @@
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
-    <Protobuf Include="proto\user.proto" GRPCServices="Server">
+    <Protobuf Include="Proto\user.proto" GRPCServices="Server">
         <Generator>MSBuild:Compile</Generator>
     </Protobuf>
-</ItemGroup>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    </ItemGroup>
 
 </Project>

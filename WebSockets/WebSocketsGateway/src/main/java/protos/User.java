@@ -33,12 +33,13 @@ public final class User {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nuser.proto\022\005proto\"9\n\007UserObj\022\n\n\002id\030\001 \001" +
-      "(\005\022\020\n\010username\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\"\034" +
-      "\n\010Username\022\020\n\010username\030\001 \001(\t2d\n\013UserServ" +
-      "ice\022)\n\007AddUser\022\016.proto.UserObj\032\016.proto.U" +
-      "serObj\022*\n\007GetUser\022\017.proto.Username\032\016.pro" +
-      "to.UserObjB\n\n\006protosP\001b\006proto3"
+      "\n\nuser.proto\022\005proto\"H\n\007UserObj\022\n\n\002id\030\001 \001" +
+      "(\005\022\020\n\010username\030\002 \001(\t\022\020\n\010password\030\003 \001(\t\022\r" +
+      "\n\005email\030\004 \001(\t\"\034\n\010Username\022\020\n\010username\030\001 " +
+      "\001(\t2d\n\013UserService\022)\n\007AddUser\022\016.proto.Us" +
+      "erObj\032\016.proto.UserObj\022*\n\007GetUser\022\017.proto" +
+      ".Username\032\016.proto.UserObjB\n\n\006protosP\001b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -49,7 +50,7 @@ public final class User {
     internal_static_proto_UserObj_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_proto_UserObj_descriptor,
-        new java.lang.String[] { "Id", "Username", "Password", });
+        new java.lang.String[] { "Id", "Username", "Password", "Email", });
     internal_static_proto_Username_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_proto_Username_fieldAccessorTable = new
