@@ -17,12 +17,11 @@
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
-    <Protobuf Include="Proto\user.proto" GRPCServices="Server">
-        <Generator>MSBuild:Compile</Generator>
-    </Protobuf>
+      <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+      <Folder Include="Proto" />
+      <Folder Include="Services" />
     </ItemGroup>
 
 </Project>

@@ -10,6 +10,6 @@ public class APiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(APiApplication.class, args);
-        SpringApplication.run(WebSocketsGatewayApplication.class, args);
+    /*    SpringApplication.run(WebSocketsGatewayApplication.class, args);*/
     }
 }

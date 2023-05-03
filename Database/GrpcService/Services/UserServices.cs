@@ -1,9 +1,12 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using DataAccess.models;
 using Grpc.Core;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using Proto;
 
-namespace gRPC.Services;
+namespace GrpcService.Services;
 
 public class UserServices : UserService.UserServiceBase
 {
@@ -23,8 +26,6 @@ public class UserServices : UserService.UserServiceBase
                 Name = request.Username,
                 Password = request.Password,
                 Email = request.Email,
-
-
             };
             User addedUser = _databaseAccess.AddUser(addingUser);
 
