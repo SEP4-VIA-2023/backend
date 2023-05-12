@@ -198,6 +198,7 @@ dependency-reduced-pom.xml
 README.html
 *.iml
 .idea
+.vscode
 .exercism
 
 # Default ignored files
