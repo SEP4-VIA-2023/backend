@@ -44,4 +44,37 @@ public class DatabaseAccess
     {
         return _dbContext.Users.FirstOrDefault(u => u.Id == userId);
     }
+    
+    public Preset AddPreset(Preset preset)
+    {
+        _dbContext.Presets.Add(preset);
+        _dbContext.SaveChanges();
+        return preset;
+    }
+
+    public void UpdatePreset(Preset preset)
+    {
+        _dbContext.Presets.Update(preset);
+        _dbContext.SaveChanges();
+    }
+
+    public void DeletePreset(int presetId)
+    {
+        var preset = _dbContext.Presets.FirstOrDefault(p => p.Id == presetId);
+        if (preset != null)
+        {
+            _dbContext.Presets.Remove(preset);
+            _dbContext.SaveChanges();
+        }
+    }
+
+    public List<Preset> GetAllPresets()
+    {
+        return _dbContext.Presets.ToList();
+    }
+
+    public Preset GetPresetById(int presetId)
+    {
+        return _dbContext.Presets.FirstOrDefault(p => p.Id == presetId);
+    }
 }
