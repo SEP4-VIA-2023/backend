@@ -11,6 +11,9 @@
         <Protobuf Include="Protos\user.proto" GRPCServices="Server">
             <Generator>MSBuild:Compile</Generator>
         </Protobuf>
+        <Protobuf Include="Protos\preset.proto" GRPCServices="Server">
+          <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
     </ItemGroup>
 
     <ItemGroup>
