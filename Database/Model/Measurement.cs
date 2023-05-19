@@ -15,6 +15,7 @@ public class Measurement
     public int Co2 { get; set; }
 
     public int Temperature { get; set; }
+    public bool ServoStatus { get; set; }
 
     public int? DeviceId { get; set; }
 
