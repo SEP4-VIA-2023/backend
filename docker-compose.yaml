@@ -2,18 +2,8 @@ version: '3.4'
 
 services:
   backend:
-    image: backend-server
+    image: backend
     container_name: backend
-    build:
-      context: ./WebSockets/WebSocketsGateway
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8080"
-    links:
-      - "database"
-  database:
-    image: database
-    container_name: database
     build:
       context: ./Database/
       dockerfile: Dockerfile
