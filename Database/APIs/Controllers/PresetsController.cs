@@ -2,13 +2,17 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Model;
+using WebSockets.Gateway;
 
 namespace APIs
 {
     [ApiController]
     [Route("api/presets")]
     public class PresetsController : ControllerBase
+
+
     {
+        private WebsocketClient clientWeb = new WebsocketClient();
         private readonly string iotDeviceUri = "http://your-iot-device-uri";
 
         [HttpGet("{deviceId}")]
@@ -76,10 +80,10 @@ public IActionResult UpdatePreset([FromBody] PresetDTO preset)
         
         [HttpPost("create")]
         
-        public IActionResult CreatePreset([FromBody] Preset preset)
+        public async Task CreatePreset([FromBody] PresetDTO preset)
         {
-            try
-            {
+            
+            
                 // Create the POST request URI for sending the preset data to the IoT device
                 string postRequestUri = $"{iotDeviceUri}/{preset.DeviceId}/preset";
                 
@@ -104,24 +108,26 @@ public IActionResult UpdatePreset([FromBody] PresetDTO preset)
                     "application/json"
                 );
                 
-                // Send an HTTP POST request to the IoT device URI to update the preset
-                HttpClient client = new HttpClient();
-                var response = client.PostAsync(postRequestUri, jsonContent).Result;
+                await clientWeb.ConnectAsync("ws://localhost:8080",jsonContent);
 
-                if (response.IsSuccessStatusCode)
+              
+
+                // Send an HTTP POST request to the IoT device URI to update the preset
+                /*HttpClient client = new HttpClient();
+                var response = client.PostAsync(postRequestUri, jsonContent).Result;*/
+
+                /*if (response.IsSuccessStatusCode)
                 {
                     return Ok();
                 }
                 else
                 {
                     return StatusCode((int)response.StatusCode);
-                }
+                }*/
             }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
+
+           
         }
         
     }
-}
+

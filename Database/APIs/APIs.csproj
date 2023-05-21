@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EFCDataAccess\EFCDataAccess.csproj" />
+      <ProjectReference Include="..\WebSockets\WebSockets.csproj" />
     </ItemGroup>
 
 </Project>
