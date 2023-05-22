@@ -1,19 +1,34 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class MeasurementDAO
+public class MeasurementDAO: IMeasurementDAO
 {
-    public Task<Measurement> CreateAsync(Measurement measurement)
+    private DataContext _dataContext;
+
+    public MeasurementDAO(DataContext dataContext)
     {
-        throw new NotImplementedException();
+        _dataContext = dataContext;
     }
-    public Task<Measurement> GetAsync(int id)
+
+    public async Task<Measurement> CreateAsync(Measurement measurement)
     {
-        throw new NotImplementedException();
+        EntityEntry<Measurement> entry = _dataContext.Measurements.Add(measurement);
+        await _dataContext.SaveChangesAsync();
+        return entry.Entity;
     }
-    public Task<List<Measurement>> GetAllAsync()
+
+    public async Task<Measurement?> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        Measurement? existing = await _dataContext.Measurements.FirstOrDefaultAsync(u =>
+            u.Id == id);
+        return existing;
+    }
+
+    public async Task<List<Measurement>> GetAllAsync()
+    {
+        return await _dataContext.Measurements.ToListAsync();
     }
 }
