@@ -8,10 +8,14 @@
 
     <ItemGroup>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.14.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.14.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EFCDataAccess\EFCDataAccess.csproj" />
+        <ProjectReference Include="..\EFCDataAccess\EFCDataAccess.csproj" />
+        <ProjectReference Include="../Logic/Logic.csproj" />
     </ItemGroup>
 
 </Project>
