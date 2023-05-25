@@ -21,11 +21,11 @@ namespace WebSockets.Gateway
         private readonly IMeasurementDAO _measurementDao;
         private MeasurementController mscontroller;
 
-        public WebsocketClient(IMeasurementDAO measurementDao)
+        public WebsocketClient()
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
-            _measurementDao = measurementDao;
+            // _measurementDao = measurementDao;
             mscontroller = new MeasurementController();
         }
 
