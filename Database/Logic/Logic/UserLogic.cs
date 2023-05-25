@@ -16,7 +16,10 @@ public class UserLogic : IUserLogic
     {
         PasswordHashing.HashPassword(dto.Password!, out byte[] passwordHash, out byte[] salt);
 
-        throw new NotImplementedException();
+        Console.WriteLine(passwordHash);
+        Console.WriteLine(salt);
+
+        return dto;
     }
 
     public string LoginUser(UserDTO dto)
@@ -24,15 +27,16 @@ public class UserLogic : IUserLogic
         // Retrieve user by username from DB
 
         // Not implemented
+        // int id, string name, byte[] password, byte[] salt, string email
 
-        User reply = new();
+        User reply = new(1, "Temp", new byte[] { 0x20, 0x20, 0x20 }, new byte[] { 0x20, 0x20, 0x20 }, "email@example.com");
 
         // Verify password
 
-        if (!PasswordHashing.VerifyPasswordHash(dto.Password!, reply.Password!, reply.Salt!))
-        {
-            throw new Exception("Incorrect password");
-        }
+        // if (!PasswordHashing.VerifyPasswordHash(dto.Password!, reply.Password!, reply.Salt!))
+        // {
+        //     throw new Exception("Incorrect password");
+        // }
 
         return _tokens.CreateToken(reply);
     }

@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_BACKEND: backend-server
-      IMAGE_DATABASE: database
       PROJECT_ID: sep4-386214
     steps:
     - name: Checkout
@@ -34,9 +33,5 @@ jobs:
       run: |-
         docker tag $IMAGE_BACKEND:latest gcr.io/$PROJECT_ID/$IMAGE_BACKEND:latest
         docker tag $IMAGE_BACKEND:latest gcr.io/$PROJECT_ID/$IMAGE_BACKEND:$GIT_TAG
-        docker tag $IMAGE_DATABASE:latest gcr.io/$PROJECT_ID/$IMAGE_DATABASE:latest
-        docker tag $IMAGE_DATABASE:latest gcr.io/$PROJECT_ID/$IMAGE_DATABASE:$GIT_TAG
         docker push gcr.io/$PROJECT_ID/$IMAGE_BACKEND:latest
         docker push gcr.io/$PROJECT_ID/$IMAGE_BACKEND:$GIT_TAG
-        docker push gcr.io/$PROJECT_ID/$IMAGE_DATABASE:latest
-        docker push gcr.io/$PROJECT_ID/$IMAGE_DATABASE:$GIT_TAG

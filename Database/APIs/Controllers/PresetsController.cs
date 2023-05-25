@@ -22,7 +22,7 @@ namespace APIs
             _dataContext = dataContext;
             _presetDao = presetDao;
         }
-        
+
         [HttpGet("{deviceId}")]
         public async Task<List<Preset>> GetPreset(int deviceId)
         {
@@ -30,7 +30,7 @@ namespace APIs
             {
                 // Create the GET request URI for fetching the preset data from the IoT device
                 string getRequestUri = $"{iotDeviceUri}/{deviceId}/preset";
-                
+
                 var press = await _presetDao.GetByDeviceIdAsync(deviceId);
                 return press;
 
@@ -54,6 +54,8 @@ namespace APIs
             {
                 Console.WriteLine(e);
             }
+
+            return null;
         }
 
 
@@ -101,7 +103,7 @@ namespace APIs
             }
             catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, e.Message);
             }
         }
 
@@ -132,7 +134,7 @@ namespace APIs
                 System.Text.Encoding.UTF8,
                 "application/json"
             );
-          
+
             Preset press = await _presetDao.CreateAsync(temp);
             Console.WriteLine(press);
 
