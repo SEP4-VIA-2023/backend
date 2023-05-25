@@ -9,7 +9,7 @@ jobs:
     name: Build and push to GCR
     runs-on: ubuntu-latest
     env:
-      IMAGE_BACKEND: backend-server
+      IMAGE_BACKEND: backend
       PROJECT_ID: sep4-386214
     steps:
     - name: Checkout
