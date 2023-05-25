@@ -8,7 +8,7 @@ using EFCDataAccess;
 using EFCDataAccess.DAOs;
 using WebSockets.Gateway;
 using Microsoft.AspNetCore.Hosting;
-
+using Logic.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -35,9 +35,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// builder.Services.AddScoped<IUserLogic, UserLogic>();
+builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<Tokens>();
-
 
 var app = builder.Build();
 
@@ -48,8 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
