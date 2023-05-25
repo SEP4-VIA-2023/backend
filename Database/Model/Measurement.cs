@@ -35,4 +35,18 @@ public class Measurement
     {
         
     }
+    
+    public override string ToString()
+    {
+        return $"Measurement ID: {Id}\n" +
+               $"Value: {Value}\n" +
+               $"Time: {Time}\n" +
+               $"Humidity: {Humidity}\n" +
+               $"CO2: {Co2}\n" +
+               $"Temperature: {Temperature}\n" +
+               $"Servo Status: {ServoStatus}\n" +
+               $"Device ID: {DeviceId}\n" +
+               $"Device: {Device}";
+    }
+
 }
