@@ -12,15 +12,17 @@ namespace APIs
     public class PresetsController : ControllerBase
 
 
-    {
-        private WebsocketClient clientWeb = new WebsocketClient();
+    {private readonly  IMeasurementDAO _measurementDao;
+        private WebsocketClient clientWeb;
         private readonly string iotDeviceUri = "http://your-iot-device-uri";
         private readonly DataContext _dataContext;
         private readonly IPresetDAO _presetDao;
+        
         public PresetsController(DataContext dataContext, IPresetDAO presetDao)
         {
             _dataContext = dataContext;
             _presetDao = presetDao;
+            _measurementDao = new MeasurementDAO(dataContext);
         }
 
         [HttpGet("{deviceId}")]
