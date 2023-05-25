@@ -4,11 +4,17 @@ using Logic.Logic;
 using Logic.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using EFCDataAccess;
+using EFCDataAccess.DAOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddDbContext<DataContext>();
+builder.Services.AddScoped<IIOTDeviceDAO, IOTDeviceDAO>();
+builder.Services.AddScoped<IUserDao, UserDAO>();
+builder.Services.AddScoped<IMeasurementDAO, MeasurementDAO>();
+builder.Services.AddScoped<IPresetDAO, PresetDAO>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +34,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<Tokens>();
+
 
 var app = builder.Build();
 

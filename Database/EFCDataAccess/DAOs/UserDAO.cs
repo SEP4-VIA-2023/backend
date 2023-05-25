@@ -1,16 +1,21 @@
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class UserDAO
+public class UserDAO:IUserDao
 {
-    public Task<User> CreateUser(User user)
+    private DataContext context;
+
+    public UserDAO(DataContext context)
     {
-        throw new NotImplementedException();
+        this.context = context;
     }
-    public Task<User> GetUserById(int id)
+
+    public async Task<User> CreateAsync(User user)
     {
-        throw new NotImplementedException();
+        EntityEntry<User> newUser = await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+        return newUser.Entity;
     }
-    
 }

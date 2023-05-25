@@ -1,31 +1,37 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class IOTDeviceDAO
+public class IOTDeviceDAO:IIOTDeviceDAO
 {
-    public Task<IOTDevice> CreateAsync(IOTDevice iotDevice)
+    private DataContext _dataContext;
+
+    public IOTDeviceDAO(DataContext dataContext)
     {
-        throw new NotImplementedException();
+        _dataContext = dataContext;
     }
-    public Task<IOTDevice> GetByTokenAsync(string token)
+
+    public async Task<IOTDevice> CreateAsync(IOTDevice iotDevice)
     {
-        throw new NotImplementedException();
+        EntityEntry<IOTDevice> entityEntry = _dataContext.IOTDevices.Add(iotDevice);
+        await _dataContext.SaveChangesAsync();
+        return entityEntry.Entity;
     }
-    public Task<IOTDevice> GetByUserIdAsync(int userId)
+
+    public async Task<IOTDevice?> GetByTokenAsync(string token)
     {
-        throw new NotImplementedException();
+        IOTDevice? existing = await _dataContext.IOTDevices.FirstOrDefaultAsync(u =>
+            u.Token.ToLower().Equals(token.ToLower())
+        );
+        return existing;
     }
-    public Task<IOTDevice> GetByIdAsync(int id)
+
+    public async Task<IOTDevice?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
-    }
-    public Task<IOTDevice> UpdateAsync(IOTDevice iotDevice)
-    {
-        throw new NotImplementedException();
-    }
-    public Task<IOTDevice> DeleteAsync(IOTDevice iotDevice)
-    {
-        throw new NotImplementedException();
+        IOTDevice? existing = await _dataContext.IOTDevices.FirstOrDefaultAsync(u =>
+            u.Id == id);
+        return existing;
     }
 }
