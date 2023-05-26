@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model;
 
@@ -10,8 +11,10 @@ public class User
     public string Name { get; set; } = null!;
 
     public string Email { get; set; } = null!;
+    [Column(TypeName = "bytea")] // Specify the column type explicitly
 
     public byte[] Password { get; set; } = null!;
+    
 
     public byte[] Salt { get; set; } = null!;
     public List<IOTDevice> IOTDevices { get; set; } = null!;
