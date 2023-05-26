@@ -56,9 +56,8 @@ namespace APIs
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                throw;
             }
-
-            return null;
         }
 
 
