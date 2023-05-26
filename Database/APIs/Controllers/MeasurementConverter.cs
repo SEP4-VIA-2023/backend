@@ -19,7 +19,7 @@ public class MeasurementConverter
         }
 
         int temperature = (bytes[4] << 8) | bytes[5];
-        return temperature;
+        return temperature/10;
     }
 
     public int GetHumidity(string data)
@@ -32,7 +32,7 @@ public class MeasurementConverter
         }
 
         int humidity = (bytes[2] << 8) | bytes[3];
-        return humidity;
+        return humidity/10;
     }
 
 
@@ -46,7 +46,7 @@ public class MeasurementConverter
         }
 
         int co2_ppm = (bytes[0] << 8) | bytes[1];
-        return co2_ppm;
+        return co2_ppm/10;
     }
 
   public int GetServo(string data)
@@ -59,7 +59,7 @@ public class MeasurementConverter
         }
 
         int servoStatus = bytes[6] & 0xFF;
-        return servoStatus;
+        return servoStatus/10;
     }
 
     public MeasurementConverter()

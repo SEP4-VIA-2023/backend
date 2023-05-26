@@ -141,7 +141,7 @@ namespace APIs
             Preset press = await _presetDao.CreateAsync(temp);
             Console.WriteLine(press);
 
-            await clientWeb.ConnectAsync("ws://localhost:8080", jsonContent);
+            await clientWeb.ConnectAsync("ws://localhost:8080"/*, jsonContent*/);
 
 
             // Send an HTTP POST request to the IoT device URI to update the preset
