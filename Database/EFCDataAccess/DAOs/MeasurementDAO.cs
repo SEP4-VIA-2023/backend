@@ -4,7 +4,7 @@ using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class MeasurementDAO: IMeasurementDAO
+public class MeasurementDAO : IMeasurementDAO
 {
     private DataContext _dataContext;
 
@@ -13,22 +13,19 @@ public class MeasurementDAO: IMeasurementDAO
         _dataContext = dataContext;
     }
 
-    public async Task<Measurement> CreateAsync(Measurement measurement)
-    {
-        EntityEntry<Measurement> entry = _dataContext.Measurements.Add(measurement);
-        await _dataContext.SaveChangesAsync();
-        return entry.Entity;
-    }
-
-    public async Task<Measurement?> GetAsync(int id)
-    {
-        Measurement? existing = await _dataContext.Measurements.FirstOrDefaultAsync(u =>
-            u.Id == id);
-        return existing;
-    }
 
     public async Task<List<Measurement>> GetAllAsync()
     {
         return await _dataContext.Measurements.ToListAsync();
+    }
+
+    public async Task<List<Measurement>> GetAllByDeviceIdAsync(int deviceId)
+    {
+        return await _dataContext.Measurements.Where(m => m.DeviceId == deviceId).ToListAsync();
+    }
+
+    public async Task<List<Measurement>> GetAllAfterTimeAsync(DateTime time)
+    {
+        return await _dataContext.Measurements.Where(m => m.Time > time).ToListAsync();
     }
 }
