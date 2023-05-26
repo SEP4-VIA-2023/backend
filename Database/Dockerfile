@@ -1,7 +1,9 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /src
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN dotnet tool install --global dotnet-ef
 WORKDIR /src
 COPY Database.sln ./
 COPY EFCDataAccess/*.csproj ./EFCDataAccess/
@@ -27,6 +29,9 @@ RUN dotnet build -c Release -o /app
 
 WORKDIR /src/APIs
 RUN dotnet build -c Release -o /app
+
+WORKDIR /src/EFCDataAccess
+RUN dotnet ef database update
 
 FROM build AS publish
 RUN dotnet publish -c Release -o /app

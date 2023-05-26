@@ -3,19 +3,19 @@ using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class UserDAO:IUserDao
+public class UserDAO : IUserDao
 {
-    private DataContext context;
+    private readonly DataContext _context;
 
     public UserDAO(DataContext context)
     {
-        this.context = context;
+        _context = context;
     }
 
     public async Task<User> CreateAsync(User user)
     {
-        EntityEntry<User> newUser = await context.Users.AddAsync(user);
-        await context.SaveChangesAsync();
+        EntityEntry<User> newUser = await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
         return newUser.Entity;
     }
 }

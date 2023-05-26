@@ -16,8 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../Logic/Logic.csproj" />
-      <ProjectReference Include="..\EFCDataAccess\EFCDataAccess.csproj" />
-   
+        <ProjectReference Include="..\EFCDataAccess\EFCDataAccess.csproj" />
     </ItemGroup>
 
 </Project>
