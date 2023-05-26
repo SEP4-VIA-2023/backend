@@ -9,7 +9,6 @@ namespace APIs.Controllers;
 
 public class MeasurementConverter
 {
-
     public int GetTemperature(string data)
     {
         byte[] bytes = new byte[data.Length / 2];
@@ -45,14 +44,25 @@ public class MeasurementConverter
         {
             bytes[i / 2] = Convert.ToByte(data.Substring(i, 2), 16);
         }
+
         int co2_ppm = (bytes[0] << 8) | bytes[1];
         return co2_ppm;
     }
-    
-    public MeasurementConverter()
+
+  public int GetServo(string data)
     {
-        
+        byte[] bytes = new byte[data.Length / 2];
+
+        for (int i = 0; i < data.Length; i += 2)
+        {
+            bytes[i / 2] = Convert.ToByte(data.Substring(i, 2), 16);
+        }
+
+        int servoStatus = bytes[6] & 0xFF;
+        return servoStatus;
     }
 
-
+    public MeasurementConverter()
+    {
+    }
 }

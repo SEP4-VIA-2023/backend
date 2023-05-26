@@ -70,7 +70,7 @@ string st = @"
     ""ack"": false,
     ""bat"": 255,
     ""offline"": false,
-    ""data"": ""039201a1010b01""
+    ""data"": ""03a30149010c01""
 }";
 
 DataContext dataContext = new DataContext();
