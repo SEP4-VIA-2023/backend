@@ -57,19 +57,11 @@ app.MapControllers();
 string st = @"
 {
     ""cmd"": ""rx"",
-    ""seqno"": 2746,
-    ""EUI"": ""0004A30B00E7E212"",
+    ""EUI"": ""0004A30B00251192"",
     ""ts"": 1682681047297,
     ""fcnt"": 8,
     ""port"": 2,
-    ""freq"": 867100000,
-    ""rssi"": -116,
-    ""snn"": -13,
-    ""toa"": 0,
-    ""dr"": ""SF12 BW125 4/5"",
     ""ack"": false,
-    ""bat"": 255,
-    ""offline"": false,
     ""data"": ""039201a1010b01""
 }";
 
@@ -80,4 +72,23 @@ MeasurementDAO msdao = new MeasurementDAO(dataContext);
 WebsocketClient server = new WebsocketClient();
 
 await server.ProcessReceivedDataAsync(st);
+
+WebsocketClient wbclient = new WebsocketClient();
+
+/*string url = "wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=";
+await wbclient.ConnectAsync(url, info);*/
+
+/*ConfigService cfg = new ConfigService();
+
+ushort minCO2 = await cfg.GetMinCO2Value();
+ushort maxCO2 = await cfg.GetMaxCO2Value();
+ushort minHumidity = await cfg.GetMinHumidityValue();
+ushort maxHumidity = await cfg.GetMaxHumidityValue();
+short minTemp = await cfg.GetMinTempValue();
+short maxTemp = await cfg.GetMaxTempValue();
+sbyte rotationPercentage = await cfg.GetRotationPercentageValue();
+
+
+Console.WriteLine(cfg.ConfigurationToString());*/
+
 app.Run();

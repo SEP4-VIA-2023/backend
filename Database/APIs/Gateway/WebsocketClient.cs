@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using EFCDataAccess;
 using Model;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WebSockets.Controllers;
 
@@ -29,7 +30,7 @@ namespace WebSockets.Gateway
             mscontroller = new MeasurementController();
         }
 
-        public async Task ConnectAsync(string url,StringContent info)
+        public async Task ConnectAsync(string url, StringContent info)
         {
             try
             {
@@ -37,8 +38,9 @@ namespace WebSockets.Gateway
                 Console.WriteLine("Websocket connection has been opened.");
 
                 // Start a new thread to send data periodically
-                var thread = new Thread(async () => await SendDataAsync(info));
+                /*var thread = new Thread(async () => await SendDataAsync(minCO2,maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage));
                 thread.Start();
+                */
 
                 await ReceiveLoopAsync();
             }
@@ -53,6 +55,7 @@ namespace WebSockets.Gateway
                 _websocket.Dispose();
             }
         }
+
         
         private async Task ReceiveLoopAsync()
         {
@@ -98,6 +101,20 @@ namespace WebSockets.Gateway
             if (measurement.TryGetValue("cmd", out var cmdValue) && cmdValue.Value<string>() == "rx")
             {
                 Console.WriteLine("WebSocketClient: Received data");
+                
+                var eui = measurement["EUI"].Value<string>();
+                var timestamp = measurement["ts"].Value<long>();
+                var fcnt = measurement["fcnt"].Value<int>();
+                var port = measurement["port"].Value<int>();
+                var ack = measurement["ack"].Value<bool>();
+                var hexData = measurement["data"].Value<string>();
+
+                Console.WriteLine("EUI: " + eui);
+                Console.WriteLine("Timestamp: " + timestamp);
+                Console.WriteLine("FCnt: " + fcnt);
+                Console.WriteLine("Port: " + port);
+                Console.WriteLine("ACK: " + ack);
+                Console.WriteLine("Hex Data: " + hexData);
         
                 if (measurement["data"] == null)
                 {
@@ -129,29 +146,28 @@ namespace WebSockets.Gateway
         
         
 
-        private async Task SendDataAsync(StringContent message)
+       /*
+       public async Task SendDataAsync()
         {
+
             try
             {
-                string jsonString = await message.ReadAsStringAsync();
+                var configurationService = new ConfigService();
+                var configuration = configurationService.CreateConfiguration(minCO2, maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage);
 
-                // Deserialize the JSON string into the desired object
-                var jsonContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
-
-                // Access the properties of the deserialized object as needed
-                // For example: deserializedObject.PropertyName
-
+                string jsonString = JsonConvert.SerializeObject(configuration);
                 byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
+
                 await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
 
-                Console.WriteLine("Message sent: " + jsonContent);
-                await CloseConnectionAsync();
+                Console.WriteLine("Message sent: " + jsonString);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An exception occurred while sending data: " + ex.Message);
             }
         }
+        */
         
         private async Task CloseConnectionAsync()
         {
