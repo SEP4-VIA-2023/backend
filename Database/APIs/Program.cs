@@ -12,11 +12,14 @@ using Logic.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddDbContext<DataContext>();
+
 builder.Services.AddScoped<IIOTDeviceDAO, IOTDeviceDAO>();
 builder.Services.AddScoped<IUserDao, UserDAO>();
 builder.Services.AddScoped<IMeasurementDAO, MeasurementDAO>();
 builder.Services.AddScoped<IPresetDAO, PresetDAO>();
+
+builder.Services.AddDbContext<DataContext>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,7 +32,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey =
                 new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                    Encoding.UTF8.GetBytes(builder!.Configuration.GetSection("AppSettings:Token").Value)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
