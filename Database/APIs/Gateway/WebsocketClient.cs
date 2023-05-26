@@ -143,19 +143,19 @@ namespace WebSockets.Gateway
 
             {
                 IPresetDAO presetDao = new PresetDAO(_dataContext);
-                presetDao.GetByIdAsync()
+                await presetDao.GetByIdAsync(1);
                 
                 
                 var configurationService = new ConfigService();
-                var configuration = configurationService.CreateConfiguration(minCO2, maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage);
+                /*var configuration = configurationService.CreateConfiguration(minCO2, maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage);*/
 
-                string jsonString = JsonConvert.SerializeObject(configuration);
+                /*string jsonString = JsonConvert.SerializeObject(configuration);
                 byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
 
 
-                await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+                await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);*/
 
-                Console.WriteLine("Message sent: " + jsonString);
+                /*Console.WriteLine("Message sent: " + jsonString);*/
             }
             catch (Exception ex)
             {
