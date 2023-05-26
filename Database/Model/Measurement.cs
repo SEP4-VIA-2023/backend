@@ -15,13 +15,14 @@ public class Measurement
     public int Co2 { get; set; }
 
     public int Temperature { get; set; }
-    public bool ServoStatus { get; set; }
+    
+    public int ServoStatus { get; set; }
 
     public int? DeviceId { get; set; }
 
     public IOTDevice? Device { get; set; }
 
-    public Measurement(int id, int value, DateTime time, int humidity, int co2, int temperature, int? deviceId)
+    public Measurement(int id, int value, DateTime time, int humidity, int co2, int temperature,int servoStatus, int? deviceId)
     {
         Id = id;
         Value = value;
@@ -29,6 +30,7 @@ public class Measurement
         Humidity = humidity;
         Co2 = co2;
         Temperature = temperature;
+        ServoStatus = servoStatus;
         DeviceId = deviceId;
     }
     private Measurement()
@@ -36,17 +38,6 @@ public class Measurement
         
     }
     
-    public override string ToString()
-    {
-        return $"Measurement ID: {Id}\n" +
-               $"Value: {Value}\n" +
-               $"Time: {Time}\n" +
-               $"Humidity: {Humidity}\n" +
-               $"CO2: {Co2}\n" +
-               $"Temperature: {Temperature}\n" +
-               $"Servo Status: {ServoStatus}\n" +
-               $"Device ID: {DeviceId}\n" +
-               $"Device: {Device}";
-    }
+
 
 }

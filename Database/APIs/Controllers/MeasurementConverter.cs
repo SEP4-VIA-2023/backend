@@ -5,9 +5,9 @@ using System.Text.Json;
 using EFCDataAccess.DAOs;
 using Model;
 
-namespace WebSockets.Controllers;
+namespace APIs.Controllers;
 
-public class MeasurementController
+public class MeasurementConverter
 {
 
     public int GetTemperature(string data)
@@ -49,11 +49,7 @@ public class MeasurementController
         return co2_ppm;
     }
     
-    
-
-
-
-    public MeasurementController()
+    public MeasurementConverter()
     {
         
     }

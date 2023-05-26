@@ -10,5 +10,6 @@ public class PresetDTO
     public int MaxCo2 { get; set; }
     public int MinTemperature { get; set; }
     public int MaxTemperature { get; set; }
+    public int Servo { get; set; }
     public int DeviceId { get; set; }
 }

@@ -16,6 +16,10 @@ public class DataContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .Property(u => u.Password)
+            .HasColumnType("bytea"); // Specify the column type explicitly
+
         modelBuilder.Entity<IOTDevice>()
             .HasOne(d => d.User)
             .WithMany(u => u.IOTDevices)

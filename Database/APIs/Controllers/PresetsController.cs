@@ -12,12 +12,13 @@ namespace APIs
     public class PresetsController : ControllerBase
 
 
-    {private readonly  IMeasurementDAO _measurementDao;
+    {
+        private readonly IMeasurementDAO _measurementDao;
         private WebsocketClient clientWeb;
         private readonly string iotDeviceUri = "http://your-iot-device-uri";
         private readonly DataContext _dataContext;
         private readonly IPresetDAO _presetDao;
-        
+
         public PresetsController(DataContext dataContext, IPresetDAO presetDao)
         {
             _dataContext = dataContext;
@@ -126,10 +127,11 @@ namespace APIs
                 maxCo2 = preset.MaxCo2,
                 minTemperature = preset.MinTemperature,
                 maxTemperature = preset.MaxTemperature,
+                servo = preset.Servo,
                 deviceId = preset.DeviceId
             };
             var temp = new Preset(preset.Id, preset.Name, preset.MinHumidity, preset.MaxHumidity, preset.MinCo2,
-                preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.DeviceId);
+                preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId);
             // Convert the JSON payload to string
             var jsonContent = new StringContent(
                 System.Text.Json.JsonSerializer.Serialize(jsonPayload),

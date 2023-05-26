@@ -9,7 +9,7 @@ using System.Text.Json.Nodes;
 using EFCDataAccess;
 using Model;
 using Newtonsoft.Json.Linq;
-using WebSockets.Controllers;
+using APIs.Controllers;
 
 
 namespace WebSockets.Gateway
@@ -19,14 +19,14 @@ namespace WebSockets.Gateway
         private ClientWebSocket _websocket;
         private CancellationTokenSource _cancellationTokenSource;
         private readonly IMeasurementDAO _measurementDao;
-        private MeasurementController mscontroller;
+        private MeasurementConverter mscontroller;
 
         public WebsocketClient()
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
             // _measurementDao = measurementDao;
-            mscontroller = new MeasurementController();
+            mscontroller = new MeasurementConverter();
         }
 
         public async Task ConnectAsync(string url,StringContent info)
