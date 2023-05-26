@@ -46,7 +46,7 @@ namespace ServerTest
         {
             try
             {
-                var buffer = new byte[1024];
+                var buffer = new byte[4096];
                 while (webSocket.State == WebSocketState.Open)
                 {
                     WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
