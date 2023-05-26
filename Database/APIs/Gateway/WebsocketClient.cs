@@ -10,7 +10,7 @@ using EFCDataAccess;
 using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WebSockets.Controllers;
+using APIs.Controllers;
 
 
 namespace WebSockets.Gateway
@@ -20,14 +20,14 @@ namespace WebSockets.Gateway
         private ClientWebSocket _websocket;
         private CancellationTokenSource _cancellationTokenSource;
         private readonly IMeasurementDAO _measurementDao;
-        private MeasurementController mscontroller;
+        private MeasurementConverter mscontroller;
 
         public WebsocketClient()
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
             // _measurementDao = measurementDao;
-            mscontroller = new MeasurementController();
+            mscontroller = new MeasurementConverter();
         }
 
         public async Task ConnectAsync(string url, StringContent info)
@@ -51,12 +51,12 @@ namespace WebSockets.Gateway
             finally
             {
                 if (_websocket.State != WebSocketState.Closed)
-                    await _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed by client", CancellationToken.None);
+                    await _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed by client",
+                        CancellationToken.None);
                 _websocket.Dispose();
             }
         }
 
-        
         private async Task ReceiveLoopAsync()
         {
             var buffer = new byte[4096];
@@ -64,7 +64,8 @@ namespace WebSockets.Gateway
             {
                 while (_websocket.State == WebSocketState.Open)
                 {
-                    WebSocketReceiveResult result = await _websocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    WebSocketReceiveResult result =
+                        await _websocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string data = Encoding.UTF8.GetString(buffer, 0, result.Count);
@@ -92,15 +93,16 @@ namespace WebSockets.Gateway
                 }
             }
         }
-        
+
         public async Task ProcessReceivedDataAsync(string data)
         {
             var measurement = JObject.Parse(data);
-            Console.WriteLine(measurement + " " +data);
-    
+            Console.WriteLine(measurement + " " + data);
+
             if (measurement.TryGetValue("cmd", out var cmdValue) && cmdValue.Value<string>() == "rx")
             {
                 Console.WriteLine("WebSocketClient: Received data");
+
                 
                 var eui = measurement["EUI"].Value<string>();
                 var timestamp = measurement["ts"].Value<long>();
@@ -120,7 +122,7 @@ namespace WebSockets.Gateway
                 {
                     throw new InvalidDataException();
                 }
-        
+
                 var stringD = measurement["data"].Value<string>();
 
                 Console.WriteLine(stringD);
@@ -131,12 +133,14 @@ namespace WebSockets.Gateway
                     mscontroller.GetHumidity(stringD),
                     mscontroller.GetCO2(stringD),
                     mscontroller.GetTemperature(stringD),
-                    null
-                );
-        
+                    mscontroller.GetServo(stringD),
+                    1)
+                ;
+
                 Console.WriteLine(measurements.ToString());
             }
         }
+
 
 
 
@@ -148,6 +152,7 @@ namespace WebSockets.Gateway
 
        /*
        public async Task SendDataAsync()
+
         {
 
             try
@@ -158,6 +163,7 @@ namespace WebSockets.Gateway
                 string jsonString = JsonConvert.SerializeObject(configuration);
                 byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
 
+
                 await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
 
                 Console.WriteLine("Message sent: " + jsonString);
@@ -167,15 +173,18 @@ namespace WebSockets.Gateway
                 Console.WriteLine("An exception occurred while sending data: " + ex.Message);
             }
         }
+
         */
         
+
         private async Task CloseConnectionAsync()
         {
             try
             {
                 if (_websocket.State == WebSocketState.Open || _websocket.State == WebSocketState.CloseReceived)
                 {
-                    await _websocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Connection closed by client", CancellationToken.None);
+                    await _websocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Connection closed by client",
+                        CancellationToken.None);
                     Console.WriteLine("Websocket connection has been closed.");
                 }
             }
@@ -193,12 +202,5 @@ namespace WebSockets.Gateway
                 _websocket.Dispose();
             }
         }
-
-
-
-
     }
 }
-
-
-

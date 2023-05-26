@@ -63,6 +63,7 @@ string st = @"
     ""port"": 2,
     ""ack"": false,
     ""data"": ""039201a1010b01""
+
 }";
 
 DataContext dataContext = new DataContext();
