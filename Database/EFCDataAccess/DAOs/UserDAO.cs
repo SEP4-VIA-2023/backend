@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Model;
 
@@ -17,5 +18,13 @@ public class UserDAO : IUserDao
         EntityEntry<User> newUser = await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
         return newUser.Entity;
+    }
+
+    public async Task<User?> GetByEmail(string email)
+    {
+        User? exists = await _context.Users.FirstOrDefaultAsync(u =>
+        u.Email == email);
+
+        return exists;
     }
 }

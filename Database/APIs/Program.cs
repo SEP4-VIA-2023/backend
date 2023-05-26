@@ -39,6 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IUserLogic, UserLogic>();
+builder.Services.AddScoped<IDeviceLogic, DeviceLogic>();
 builder.Services.AddScoped<Tokens>();
 
 var app = builder.Build();
