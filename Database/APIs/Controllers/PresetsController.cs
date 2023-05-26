@@ -26,7 +26,7 @@ namespace APIs
             _measurementDao = new MeasurementDAO(dataContext);
         }
 
-        [HttpGet("{deviceId}")]
+        [HttpGet("{deviceId}"), Authorize]
         public async Task<List<Preset>> GetPreset(int deviceId)
         {
             try
@@ -60,8 +60,7 @@ namespace APIs
             }
         }
 
-
-        [HttpPut("update/{id}"), Authorize]
+        [HttpPut("{id}"), Authorize]
         public IActionResult UpdatePreset([FromBody] PresetDTO preset)
         {
             try
@@ -140,22 +139,6 @@ namespace APIs
 
             Preset press = await _presetDao.CreateAsync(temp);
             Console.WriteLine(press);
-
-            await clientWeb.ConnectAsync("ws://localhost:8080"/*, jsonContent*/);
-
-
-            // Send an HTTP POST request to the IoT device URI to update the preset
-            /*HttpClient client = new HttpClient();
-            var response = client.PostAsync(postRequestUri, jsonContent).Result;*/
-
-            /*if (response.IsSuccessStatusCode)
-            {
-                return Ok();
-            }
-            else
-            {
-                return StatusCode((int)response.StatusCode);
-            }*/
         }
     }
 }

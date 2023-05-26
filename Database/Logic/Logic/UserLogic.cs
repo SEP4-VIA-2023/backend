@@ -1,3 +1,4 @@
+using EFCDataAccess;
 using Logic.Interface;
 using Logic.Security;
 using Model;
@@ -7,36 +8,42 @@ namespace Logic.Logic;
 public class UserLogic : IUserLogic
 {
     private readonly Tokens _tokens;
+    private readonly IUserDao _dataAccess;
 
-    public UserLogic(Tokens tokens)
+    public UserLogic(Tokens tokens, IUserDao dataAccess)
     {
         _tokens = tokens;
+        _dataAccess = dataAccess;
     }
-    public UserDTO CreateUser(UserDTO dto)
+
+    public async Task<UserDTO> CreateUser(UserDTO dto)
     {
         PasswordHashing.HashPassword(dto.Password!, out byte[] passwordHash, out byte[] salt);
 
-        Console.WriteLine(passwordHash);
-        Console.WriteLine(salt);
+        User? reply = await _dataAccess.GetByEmail(dto.Email!);
 
-        return dto;
+        if (reply != null)
+        {
+            throw new Exception("User with that email exists");
+        }
+
+        User created = await _dataAccess.CreateAsync(new User(dto.Name!, passwordHash, salt, dto.Email!));
+
+        return new UserDTO(created.Name, created.Email);
     }
 
-    public string LoginUser(UserDTO dto)
+    public async Task<string> LoginUser(UserDTO dto)
     {
         // Retrieve user by username from DB
 
-        // Not implemented
-        // int id, string name, byte[] password, byte[] salt, string email
-
-        User reply = new(1, "Temp", new byte[] { 0x20, 0x20, 0x20 }, new byte[] { 0x20, 0x20, 0x20 }, "email@example.com");
+        User? reply = await _dataAccess.GetByEmail(dto.Email!) ?? throw new Exception("User not found");
 
         // Verify password
 
-        // if (!PasswordHashing.VerifyPasswordHash(dto.Password!, reply.Password!, reply.Salt!))
-        // {
-        //     throw new Exception("Incorrect password");
-        // }
+        if (!PasswordHashing.VerifyPasswordHash(dto.Password!, reply.Password!, reply.Salt!))
+        {
+            throw new Exception("Incorrect password");
+        }
 
         return _tokens.CreateToken(reply);
     }

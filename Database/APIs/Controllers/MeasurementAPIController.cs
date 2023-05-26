@@ -22,7 +22,7 @@ public class MeasurementAPIController : ControllerBase
         this._measurementDao = _measurementDao;
     }
 
-    [HttpGet("{timestamp}")]
+    [HttpGet("{timestamp}"), Authorize]
     public async Task<List<Measurement>> GetAllAfterTimeMeasurement(DateTime time)
     {
         try
@@ -36,7 +36,7 @@ public class MeasurementAPIController : ControllerBase
         }
     }
 
-    [HttpGet("{deviceId}")]
+    [HttpGet("{deviceId}"), Authorize]
     public async Task<List<Measurement>> GetAllByDeviceId(int deviceId)
     {
         try
@@ -50,7 +50,7 @@ public class MeasurementAPIController : ControllerBase
         }
     }
 
-    [HttpGet()]
+    [HttpGet, Authorize]
     public async Task<List<Measurement>> GetAllAsync()
     {
         try
