@@ -5,8 +5,7 @@ namespace Model;
 public class Measurement
 {
     [Key] public int Id { get; set; }
-
-    public int Value { get; set; }
+    
 
     public DateTime Time { get; set; }
 
@@ -22,10 +21,10 @@ public class Measurement
 
     public IOTDevice? Device { get; set; }
 
-    public Measurement(int id, int value, DateTime time, int humidity, int co2, int temperature,int servoStatus, int? deviceId)
+    public Measurement(int id,DateTime time, int humidity, int co2, int temperature,int servoStatus, int? deviceId)
     {
         Id = id;
-        Value = value;
+    
         Time = time;
         Humidity = humidity;
         Co2 = co2;
@@ -39,7 +38,7 @@ public class Measurement
     }
     public override string ToString()
     {
-        return $"Measurement ID: {Id}\nValue: {Value}\nTime: {Time}\nHumidity: {Humidity}\nCO2: {Co2}\nTemperature: {Temperature}\nServo Status: {ServoStatus}\nDevice ID: {DeviceId}";
+        return $"Measurement ID: {Id}\nTime: {Time}\nHumidity: {Humidity}\nCO2: {Co2}\nTemperature: {Temperature}\nServo Status: {ServoStatus}\nDevice ID: {DeviceId}";
     }
 
 

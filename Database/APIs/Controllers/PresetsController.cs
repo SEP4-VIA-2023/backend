@@ -77,7 +77,6 @@ namespace APIs
         [HttpPost("create"), Authorize]
         public async Task CreatePreset([FromBody] PresetDTO preset)
         {
-            
             var jsonPayload = new
             {
                 id = preset.Id,
@@ -95,15 +94,30 @@ namespace APIs
                 preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId);
 
             Preset press = await _presetDao.CreateAsync(temp);
-            Console.WriteLine(press);
-
-
-
-            await clientWeb.ConnectAsync("wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=");
-            await clientWeb.SendDataAsync(preset);
-            
-
-
         }
+        [HttpDelete("{id}"), Authorize]
+        public async Task<IActionResult> DeletePreset(int id)
+        {
+            try
+            {
+                // Check if the preset exists
+                var existingPreset = await _presetDao.GetByIdAsync(id);
+                if (existingPreset == null)
+                {
+                    return NotFound("Preset not found");
+                }
+
+                // Delete the preset
+                await _presetDao.DeleteAsync(id);
+
+                // Return a response indicating the deletion was successful
+                return Ok("Preset deleted successfully");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+  
     }
 }
