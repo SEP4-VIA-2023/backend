@@ -11,7 +11,6 @@ using Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using APIs.Controllers;
-using EFCDataAccess.DAOs;
 
 
 namespace WebSockets.Gateway
@@ -22,7 +21,6 @@ namespace WebSockets.Gateway
         private CancellationTokenSource _cancellationTokenSource;
         private readonly IMeasurementDAO _measurementDao;
         private MeasurementConverter mscontroller;
-        private DataContext _dataContext;
 
         public WebsocketClient()
         {
@@ -39,10 +37,10 @@ namespace WebSockets.Gateway
                 await _websocket.ConnectAsync(new Uri(url), CancellationToken.None);
                 Console.WriteLine("Websocket connection has been opened.");
 
-                 //Start a new thread to send data periodically
-                /*var thread = new Thread(async () => await SendDataAsync(minCO2,maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage));*/
-                /*thread.Start();*/
-                
+                // Start a new thread to send data periodically
+                /*var thread = new Thread(async () => await SendDataAsync(minCO2,maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage));
+                thread.Start();
+                */
 
                 await ReceiveLoopAsync();
             }
@@ -71,6 +69,7 @@ namespace WebSockets.Gateway
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string data = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        Console.WriteLine("Received message: " + data);
 
                         // Process the received JSON data
                         await ProcessReceivedDataAsync(data);
@@ -98,16 +97,35 @@ namespace WebSockets.Gateway
         public async Task ProcessReceivedDataAsync(string data)
         {
             var measurement = JObject.Parse(data);
-           
+            Console.WriteLine(measurement + " " + data);
 
             if (measurement.TryGetValue("cmd", out var cmdValue) && cmdValue.Value<string>() == "rx")
             {
                 Console.WriteLine("WebSocketClient: Received data");
-                
+
+
+                var eui = measurement["EUI"].Value<string>();
+                var timestamp = measurement["ts"].Value<long>();
+                var fcnt = measurement["fcnt"].Value<int>();
+                var port = measurement["port"].Value<int>();
+                var ack = measurement["ack"].Value<bool>();
+                var hexData = measurement["data"].Value<string>();
+
+                Console.WriteLine("EUI: " + eui);
+                Console.WriteLine("Timestamp: " + timestamp);
+                Console.WriteLine("FCnt: " + fcnt);
+                Console.WriteLine("Port: " + port);
+                Console.WriteLine("ACK: " + ack);
+                Console.WriteLine("Hex Data: " + hexData);
+
+                if (measurement["data"] == null)
+                {
+                    throw new InvalidDataException();
+                }
 
                 var stringD = measurement["data"].Value<string>();
 
-               
+                Console.WriteLine(stringD);
                 var measurements = new Measurement(
                     1,
                     0,
@@ -129,45 +147,35 @@ namespace WebSockets.Gateway
 
 
 
-        
-        
-
-       
-       
-       public async Task SendDataAsync()
-
-        {
-
-            try
 
 
-            {
-                IPresetDAO presetDao = new PresetDAO(_dataContext);
-                await presetDao.GetByIdAsync(1);
-                
-                
-                var configurationService = new ConfigService();
-                /*var configuration = configurationService.CreateConfiguration(minCO2, maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage);*/
 
-                /*string jsonString = JsonConvert.SerializeObject(configuration);
-                byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
+        /*
+        public async Task SendDataAsync()
+
+         {
+
+             try
+             {
+                 var configurationService = new ConfigService();
+                 var configuration = configurationService.CreateConfiguration(minCO2, maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage);
+
+                 string jsonString = JsonConvert.SerializeObject(configuration);
+                 byte[] buffer = Encoding.UTF8.GetBytes(jsonString);
 
 
-                await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);*/
+                 await _websocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
 
-                /*Console.WriteLine("Message sent: " + jsonString);*/
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An exception occurred while sending data: " + ex.Message);
-            }
-        }
-        
-        
+                 Console.WriteLine("Message sent: " + jsonString);
+             }
+             catch (Exception ex)
+             {
+                 Console.WriteLine("An exception occurred while sending data: " + ex.Message);
+             }
+         }
 
-       
-        
-        
+         */
+
 
         private async Task CloseConnectionAsync()
         {

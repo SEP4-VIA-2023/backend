@@ -81,7 +81,7 @@ await server.ProcessReceivedDataAsync(st);*/
 WebsocketClient wbclient = new WebsocketClient();
 
 string url = "wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=";
-await wbclient.ConnectAsync(url);
+wbclient.ConnectAsync(url);
 
 /*ConfigService cfg = new ConfigService();
 
