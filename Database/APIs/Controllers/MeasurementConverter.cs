@@ -46,7 +46,7 @@ public class MeasurementConverter
         }
 
         int co2_ppm = (bytes[0] << 8) | bytes[1];
-        return co2_ppm/10;
+        return co2_ppm;
     }
 
   public int GetServo(string data)

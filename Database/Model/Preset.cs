@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace Model;
 
@@ -40,6 +41,22 @@ public class Preset
         Servo = servo;
         DeviceId = deviceId;
     }
+    public override string ToString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine($"Id: {Id}");
+        sb.AppendLine($"Name: {Name}");
+        sb.AppendLine($"MinHumidity: {MinHumidity}");
+        sb.AppendLine($"MaxHumidity: {MaxHumidity}");
+        sb.AppendLine($"MinCo2: {MinCo2}");
+        sb.AppendLine($"MaxCo2: {MaxCo2}");
+        sb.AppendLine($"MinTemperature: {MinTemperature}");
+        sb.AppendLine($"MaxTemperature: {MaxTemperature}");
+        sb.AppendLine($"Servo: {Servo}");
+        sb.AppendLine($"DeviceId: {DeviceId}");
+        return sb.ToString();
+    }
+    
 
     private Preset()
     {
