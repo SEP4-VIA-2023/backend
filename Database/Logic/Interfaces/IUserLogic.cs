@@ -4,6 +4,6 @@ namespace Logic.Interface;
 
 public interface IUserLogic
 {
-    UserDTO CreateUser(UserDTO dto);
-    string LoginUser(UserDTO dto);
+    Task<UserDTO> CreateUser(UserDTO dto);
+    Task<string> LoginUser(UserDTO dto);
 }

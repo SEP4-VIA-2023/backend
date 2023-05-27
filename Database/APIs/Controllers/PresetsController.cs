@@ -27,32 +27,15 @@ namespace APIs
             clientWeb = new WebsocketClient();
         }
 
-        [HttpGet("{deviceId}")]
+        [HttpGet("{deviceId}"), Authorize]
         public async Task<List<Preset>> GetPreset(int deviceId)
         {
             try
             {
-                // Create the GET request URI for fetching the preset data from the IoT device
                 string getRequestUri = $"{iotDeviceUri}/{deviceId}/preset";
 
                 var press = await _presetDao.GetByDeviceIdAsync(deviceId);
                 return press;
-
-                // Send an HTTP GET request to the IoT device URI
-                /*HttpClient client = new HttpClient();
-                var response = client.GetAsync(getRequestUri).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    // Read the response content and deserialize it into a Preset object
-                    var responseContent = response.Content.ReadAsStringAsync().Result;
-                    var preset = System.Text.Json.JsonSerializer.Deserialize<Preset>(responseContent);
-                    return Ok(preset);
-                }
-                else
-                {
-                    return StatusCode((int)response.StatusCode);
-                }*/
             }
             catch (Exception e)
             {
@@ -61,48 +44,29 @@ namespace APIs
             }
         }
 
-
-        [HttpPut("update/{id}"), Authorize]
-        public IActionResult UpdatePreset([FromBody] PresetDTO preset)
+        [HttpPut("{id}"), Authorize]
+        public async Task<IActionResult> UpdatePreset(int id, [FromBody] PresetDTO presetDTO)
         {
             try
             {
-                // Create the POST request URI for sending the preset data to the IoT device
-                string postRequestUri = $"{iotDeviceUri}/{preset.DeviceId}/preset";
-
-                // Create a JSON payload representing the updated preset
-                var jsonPayload = new
-                {
-                    id = preset.Id,
-                    name = preset.Name,
-                    minHumidity = preset.MinHumidity,
-                    maxHumidity = preset.MaxHumidity,
-                    minCo2 = preset.MinCo2,
-                    maxCo2 = preset.MaxCo2,
-                    minTemperature = preset.MinTemperature,
-                    maxTemperature = preset.MaxTemperature,
-                    deviceId = preset.DeviceId
-                };
-
-                // Convert the JSON payload to string
-                var jsonContent = new StringContent(
-                    System.Text.Json.JsonSerializer.Serialize(preset),
-                    System.Text.Encoding.UTF8,
-                    "application/json"
+                var preset = new Preset
+                (
+                    id,
+                    presetDTO.Name,
+                    presetDTO.MinHumidity,
+                    presetDTO.MaxHumidity,
+                    presetDTO.MinCo2,
+                    presetDTO.MaxCo2,
+                    presetDTO.MinTemperature,
+                    presetDTO.MaxTemperature,
+                    presetDTO.Servo,
+                    presetDTO.DeviceId
                 );
 
-                // Send an HTTP POST request to the IoT device URI to update the preset
-                HttpClient client = new HttpClient();
-                var response = client.PostAsync(postRequestUri, jsonContent).Result;
+                await _presetDao.UpdateAsync(id, preset);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return StatusCode((int)response.StatusCode);
-                }
+                // Return a response indicating the update was successful
+                return Ok("Preset updated successfully");
             }
             catch (Exception e)
             {
@@ -113,10 +77,7 @@ namespace APIs
         [HttpPost("create"), Authorize]
         public async Task CreatePreset([FromBody] PresetDTO preset)
         {
-            // Create the POST request URI for sending the preset data to the IoT device
-            string postRequestUri = $"{iotDeviceUri}/{preset.DeviceId}/preset";
-
-            // Create a JSON payload representing the updated preset
+            
             var jsonPayload = new
             {
                 id = preset.Id,
@@ -132,15 +93,10 @@ namespace APIs
             };
             var temp = new Preset(preset.Id, preset.Name, preset.MinHumidity, preset.MaxHumidity, preset.MinCo2,
                 preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId);
-            // Convert the JSON payload to string
-            var jsonContent = new StringContent(
-                System.Text.Json.JsonSerializer.Serialize(jsonPayload),
-                System.Text.Encoding.UTF8,
-                "application/json"
-            );
 
             Preset press = await _presetDao.CreateAsync(temp);
             Console.WriteLine(press);
+
 
 
             await clientWeb.ConnectAsync("wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=");
@@ -148,18 +104,6 @@ namespace APIs
             
 
 
-            // Send an HTTP POST request to the IoT device URI to update the preset
-            /*HttpClient client = new HttpClient();
-            var response = client.PostAsync(postRequestUri, jsonContent).Result;*/
-
-            /*if (response.IsSuccessStatusCode)
-            {
-                return Ok();
-            }
-            else
-            {
-                return StatusCode((int)response.StatusCode);
-            }*/
         }
     }
 }

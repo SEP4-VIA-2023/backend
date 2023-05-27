@@ -16,8 +16,5 @@ public class IOTDevice
         Token = token;
         UserId = userId;
     }
-    private IOTDevice()
-    {
-        
-    }
+    private IOTDevice() { }
 }
