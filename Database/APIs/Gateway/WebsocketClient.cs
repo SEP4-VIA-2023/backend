@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using APIs.Controllers;
 using EFCDataAccess.DAOs;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
 
@@ -24,6 +25,7 @@ namespace WebSockets.Gateway
         private CancellationTokenSource _cancellationTokenSource;
         private readonly IMeasurementDAO _measurementDao;
         private MeasurementConverter mscontroller;
+        private DataContext _dataContext;
 
         public WebsocketClient()
         {
