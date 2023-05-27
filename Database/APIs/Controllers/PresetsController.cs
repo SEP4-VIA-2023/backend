@@ -19,11 +19,12 @@ namespace APIs
         private readonly DataContext _dataContext;
         private readonly IPresetDAO _presetDao;
 
-        public PresetsController(DataContext dataContext, IPresetDAO presetDao)
+        public PresetsController(DataContext dataContext)
         {
             _dataContext = dataContext;
-            _presetDao = presetDao;
+            _presetDao = new PresetDAO(dataContext);
             _measurementDao = new MeasurementDAO(dataContext);
+            clientWeb = new WebsocketClient();
         }
 
         [HttpGet("{deviceId}")]
@@ -141,7 +142,10 @@ namespace APIs
             Preset press = await _presetDao.CreateAsync(temp);
             Console.WriteLine(press);
 
-            await clientWeb.ConnectAsync("ws://localhost:8080"/*, jsonContent*/);
+
+            await clientWeb.ConnectAsync("wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=");
+            await clientWeb.SendDataAsync(preset);
+            
 
 
             // Send an HTTP POST request to the IoT device URI to update the preset
