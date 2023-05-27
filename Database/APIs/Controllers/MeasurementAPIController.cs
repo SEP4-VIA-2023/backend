@@ -12,17 +12,15 @@ namespace APIs.Controllers;
 public class MeasurementAPIController : ControllerBase
 {
     private readonly IMeasurementDAO _measurementDao;
-    private WebsocketClient clientWeb;
     private readonly DataContext _dataContext;
 
     public MeasurementAPIController(DataContext dataContext, IMeasurementDAO _measurementDao)
     {
         _dataContext = dataContext;
-        clientWeb = new WebsocketClient();
         this._measurementDao = _measurementDao;
     }
 
-    [HttpGet("{timestamp}")]
+    [HttpGet("{timestamp}"), Authorize]
     public async Task<List<Measurement>> GetAllAfterTimeMeasurement(DateTime time)
     {
         try
@@ -36,7 +34,7 @@ public class MeasurementAPIController : ControllerBase
         }
     }
 
-    [HttpGet("{deviceId}")]
+    [HttpGet("{deviceId}"), Authorize]
     public async Task<List<Measurement>> GetAllByDeviceId(int deviceId)
     {
         try
@@ -50,7 +48,7 @@ public class MeasurementAPIController : ControllerBase
         }
     }
 
-    [HttpGet()]
+    [HttpGet, Authorize]
     public async Task<List<Measurement>> GetAllAsync()
     {
         try

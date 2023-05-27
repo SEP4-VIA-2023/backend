@@ -16,31 +16,33 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("create"), AllowAnonymous]
-    public ActionResult<UserDTO> CreateUser([FromBody] UserDTO dto)
+    public async Task<ActionResult<UserDTO>> CreateUserAsync([FromBody] UserDTO dto)
     {
         try
         {
-            UserDTO created = _logic.CreateUser(dto);
+            UserDTO created = await _logic.CreateUser(dto);
 
             return Created("User created", created);
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
     }
 
     [HttpPost("login"), AllowAnonymous]
-    public ActionResult<string> LoginUser([FromBody] UserDTO dto)
+    public async Task<ActionResult<string>> LoginUserAsync([FromBody] UserDTO dto)
     {
         try
         {
-            string token = _logic.LoginUser(dto);
+            string token = await _logic.LoginUser(dto);
 
             return Created("User authorized", token);
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
     }
