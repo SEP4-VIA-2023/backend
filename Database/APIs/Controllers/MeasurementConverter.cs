@@ -59,7 +59,7 @@ public class MeasurementConverter
         }
 
         int servoStatus = bytes[6] & 0xFF;
-        return servoStatus/10;
+        return servoStatus;
     }
 
     public MeasurementConverter()

@@ -12,13 +12,11 @@ namespace APIs.Controllers;
 public class MeasurementAPIController : ControllerBase
 {
     private readonly IMeasurementDAO _measurementDao;
-    private WebsocketClient clientWeb;
     private readonly DataContext _dataContext;
 
     public MeasurementAPIController(DataContext dataContext, IMeasurementDAO _measurementDao)
     {
         _dataContext = dataContext;
-        clientWeb = new WebsocketClient();
         this._measurementDao = _measurementDao;
     }
 
