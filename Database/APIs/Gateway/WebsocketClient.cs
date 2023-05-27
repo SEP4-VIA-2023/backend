@@ -31,7 +31,7 @@ namespace WebSockets.Gateway
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
-           
+
             mscontroller = new MeasurementConverter();
             _dataContext = new DataContext();
             _measurementDao = new MeasurementDAO(_dataContext);
@@ -39,7 +39,8 @@ namespace WebSockets.Gateway
         }
 
         public async Task ConnectAsync(string url)
-        {_cancellationTokenSource = new CancellationTokenSource();
+        {
+            _cancellationTokenSource = new CancellationTokenSource();
 
             try
             {
@@ -99,7 +100,6 @@ namespace WebSockets.Gateway
         }
 
 
-
         private async Task ReceiveLoopAsync()
         {
             var buffer = new byte[4096];
@@ -112,7 +112,6 @@ namespace WebSockets.Gateway
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string data = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
 
 
                         // Process the received JSON data
@@ -142,33 +141,42 @@ namespace WebSockets.Gateway
 
             if (measurement.TryGetValue("cmd", out var cmdValue) && cmdValue.Value<string>() == "rx")
             {
-               
-
                 if (measurement["data"] == null)
                 {
                     throw new InvalidDataException();
                 }
 
                 var stringD = measurement["data"].Value<string>();
+
+                // Create the DateTime object with DateTimeKind.Local
                 
+
                 var measurements = new Measurement(
-                        0,
-                        DateTime.Now,
-                        mscontroller.GetHumidity(stringD),
-                        mscontroller.GetCO2(stringD),
-                        mscontroller.GetTemperature(stringD),
-                        mscontroller.GetServo(stringD),
-                        1)
-                    ;
-                await _measurementDao.CreateAsync(measurements);    
-                Console.WriteLine(measurements.ToString());
+                    0,
+                    DateTime.Now.AddHours(2), 
+                    mscontroller.GetHumidity(stringD),
+                    mscontroller.GetCO2(stringD),
+                    mscontroller.GetTemperature(stringD),
+                    mscontroller.GetServo(stringD),
+                    1);
+
+                try
+                {
+                    await _measurementDao.CreateAsync(measurements);
+                    Console.WriteLine(measurements.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
             }
         }
 
 
+
         public async Task SendDataAsync(Preset preset)
         {
-        
             Console.WriteLine(preset.ToString());
 
             if (_websocket.State != WebSocketState.Open)
