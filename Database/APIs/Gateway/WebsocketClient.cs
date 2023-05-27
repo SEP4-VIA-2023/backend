@@ -29,7 +29,7 @@ namespace WebSockets.Gateway
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
-            // _measurementDao = measurementDao;
+             _measurementDao = new MeasurementDAO(_dataContext);
             mscontroller = new MeasurementConverter();
             _dataContext = new DataContext();
         }
