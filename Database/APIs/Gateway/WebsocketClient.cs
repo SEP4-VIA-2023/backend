@@ -16,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
 
-
 namespace WebSockets.Gateway
 {
     public class WebsocketClient
@@ -26,39 +25,41 @@ namespace WebSockets.Gateway
         private readonly IMeasurementDAO _measurementDao;
         private MeasurementConverter mscontroller;
         private DataContext _dataContext;
+        private readonly IPresetDAO _presetDao;
 
         public WebsocketClient()
         {
             _websocket = new ClientWebSocket();
             _cancellationTokenSource = new CancellationTokenSource();
-             _measurementDao = new MeasurementDAO(_dataContext);
+           
             mscontroller = new MeasurementConverter();
             _dataContext = new DataContext();
+            _measurementDao = new MeasurementDAO(_dataContext);
+            _presetDao = new PresetDAO(_dataContext);
         }
-        
+
         public async Task ConnectAsync(string url)
-        {
+        {_cancellationTokenSource = new CancellationTokenSource();
+
             try
             {
                 await _websocket.ConnectAsync(new Uri(url), CancellationToken.None);
                 Console.WriteLine("Websocket connection has been opened.");
 
-
                 // Start the receive task
-                await  ReceiveLoopAsync();
-                
+                var receiveTask = ReceiveLoopAsync();
 
-                // Start a new thread to send data periodically
-                /*var thread = new Thread(async () => await SendDataAsync(minCO2,maxCO2, minHumidity, maxHumidity, minTemp, maxTemp, rotationPercentage));
-                thread.Start();
-                */
+                // Start sending data periodically
+                var sendTask = SendDataPeriodicallyAsync();
 
+                // Wait for either the receive or send task to complete
+                await Task.WhenAny(receiveTask, sendTask);
 
-                /*// Start the send task
-                var sendTask = SendDataAsync();*/
+                // Cancel the remaining task
+                _cancellationTokenSource.Cancel();
 
-                /*// Wait for both tasks to complete
-                await Task.WhenAll(receiveTask, sendTask);*/
+                // Wait for both tasks to complete
+                await Task.WhenAll(receiveTask, sendTask);
             }
             catch (Exception ex)
             {
@@ -69,14 +70,35 @@ namespace WebSockets.Gateway
                 if (_websocket.State != WebSocketState.Closed)
                 {
                     await CloseConnectionAsync();
-                    Console.WriteLine("websocket closed");
+                    Console.WriteLine("Websocket closed");
                 }
+
                 _websocket.Dispose();
             }
         }
-       
 
-        
+        public async Task SendDataPeriodicallyAsync()
+        {
+            try
+            {
+                while (!_cancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    Preset preset = await _presetDao.GetLastPresetByDeviceIdAsync(1);
+                    await SendDataAsync(preset);
+                    await Task.Delay(TimeSpan.FromMinutes(4), _cancellationTokenSource.Token);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // The task was canceled, no further action needed
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An exception occurred while sending data: " + ex.Message);
+            }
+        }
+
+
 
         private async Task ReceiveLoopAsync()
         {
@@ -85,17 +107,17 @@ namespace WebSockets.Gateway
             {
                 while (_websocket.State == WebSocketState.Open)
                 {
-                    WebSocketReceiveResult result = await _websocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    WebSocketReceiveResult result =
+                        await _websocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string data = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                        Console.WriteLine("Received message: " + data);
+
 
                         // Process the received JSON data
 
                         await ProcessReceivedDataAsync(data);
-                        
                     }
                 }
             }
@@ -106,34 +128,21 @@ namespace WebSockets.Gateway
             catch (Exception ex)
             {
                 Console.WriteLine("An exception occurred while receiving data: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception: " + ex.InnerException.Message);
+                }
             }
         }
 
 
         public async Task ProcessReceivedDataAsync(string data)
         {
-            
             var measurement = JObject.Parse(data);
-            Console.WriteLine(measurement + " " + data);
 
             if (measurement.TryGetValue("cmd", out var cmdValue) && cmdValue.Value<string>() == "rx")
             {
-                Console.WriteLine("WebSocketClient: Received data");
-
-
-                var eui = measurement["EUI"].Value<string>();
-                var timestamp = measurement["ts"].Value<long>();
-                var fcnt = measurement["fcnt"].Value<int>();
-                var port = measurement["port"].Value<int>();
-                var ack = measurement["ack"].Value<bool>();
-                var hexData = measurement["data"].Value<string>();
-
-                Console.WriteLine("EUI: " + eui);
-                Console.WriteLine("Timestamp: " + timestamp);
-                Console.WriteLine("FCnt: " + fcnt);
-                Console.WriteLine("Port: " + port);
-                Console.WriteLine("ACK: " + ack);
-                Console.WriteLine("Hex Data: " + hexData);
+               
 
                 if (measurement["data"] == null)
                 {
@@ -141,38 +150,33 @@ namespace WebSockets.Gateway
                 }
 
                 var stringD = measurement["data"].Value<string>();
-
-                Console.WriteLine(stringD);
+                
                 var measurements = new Measurement(
-                    1,
-                    0,
-                    DateTime.Now,
-                    mscontroller.GetHumidity(stringD),
-                    mscontroller.GetCO2(stringD),
-                    mscontroller.GetTemperature(stringD),
-                    mscontroller.GetServo(stringD),
-                    1)
-                ;
-
+                        0,
+                        DateTime.Now,
+                        mscontroller.GetHumidity(stringD),
+                        mscontroller.GetCO2(stringD),
+                        mscontroller.GetTemperature(stringD),
+                        mscontroller.GetServo(stringD),
+                        1)
+                    ;
+                await _measurementDao.CreateAsync(measurements);    
                 Console.WriteLine(measurements.ToString());
             }
         }
 
 
-
-
-
-
-
-       
+        public async Task SendDataAsync(Preset preset)
+        {
         
-        public async Task SendDataAsync(PresetDTO preset)
-        {     Console.WriteLine(preset);
+            Console.WriteLine(preset.ToString());
+
             if (_websocket.State != WebSocketState.Open)
             {
                 Console.WriteLine("The WebSocket is not connected or is not in the Open state. Cannot send data.");
                 return;
             }
+
             try
             {
                 /*IPresetDAO presetDao = new PresetDAO(_dataContext);
@@ -187,8 +191,9 @@ namespace WebSockets.Gateway
                 byte servoStatus = (byte)preset.Servo;
 
                 // Convert the preset values to hexadecimal strings
-                string payloadData = $"{minCO2:X4}{maxCO2:X4}{minHum:X4}{maxHum:X4}{minTemp:X4}{maxTemp:X4}{servoStatus:X2}";
-                
+                string payloadData =
+                    $"{minCO2:X4}{maxCO2:X4}{minHum:X4}{maxHum:X4}{minTemp:X4}{maxTemp:X4}{servoStatus:X2}";
+
 // Create the JSON payload
                 var payload = new
                 {
@@ -204,25 +209,20 @@ namespace WebSockets.Gateway
 
 
 // Send the JSON payload
-                await _websocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(payloadJson)), WebSocketMessageType.Text, true, CancellationToken.None);
+                await _websocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(payloadJson)),
+                    WebSocketMessageType.Text, true, CancellationToken.None);
 
                 Console.WriteLine("Data sent successfully.");
                 Console.WriteLine(payloadData);
-                
+
                 int payloadByteCount = Encoding.UTF8.GetByteCount(payloadJson);
                 Console.WriteLine("Payload byte count: " + payloadByteCount);
-                
-                
             }
             catch (Exception ex)
             {
                 Console.WriteLine("An exception occurred while sending data: " + ex.Message);
             }
         }
-
-
-        
-
 
 
         public async Task CloseConnectionAsync()

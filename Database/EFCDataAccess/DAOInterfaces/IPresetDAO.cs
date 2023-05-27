@@ -10,4 +10,5 @@ public interface IPresetDAO
     public Task<List<Preset>> GetAllAsync();
     public Task<Preset> UpdateAsync(int id,Preset preset);
     public Task<Preset> DeleteAsync(int id);
+    public Task<Preset> GetLastPresetByDeviceIdAsync(int deviceId);
 }

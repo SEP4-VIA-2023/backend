@@ -95,12 +95,11 @@ namespace APIs
                 preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId);
 
             Preset press = await _presetDao.CreateAsync(temp);
-            Console.WriteLine(press);
+ 
 
 
 
-            await clientWeb.ConnectAsync("wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5ka4lPPjDJdv8czIiFOiS49tg=");
-            await clientWeb.SendDataAsync(preset);
+         
             
 
 

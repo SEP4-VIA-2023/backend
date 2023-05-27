@@ -4,7 +4,7 @@ using Model;
 
 namespace EFCDataAccess.DAOs;
 
-public class PresetDAO: IPresetDAO
+public class PresetDAO : IPresetDAO
 {
     private DataContext _dataContext;
 
@@ -26,7 +26,8 @@ public class PresetDAO: IPresetDAO
             u.Id == id);
         return existing;
     }
-    public async  Task<List<Preset>>GetByDeviceIdAsync(int id)
+
+    public async Task<List<Preset>> GetByDeviceIdAsync(int id)
     {
         return await _dataContext.Presets.Where(u => u.DeviceId == id).ToListAsync();
     }
@@ -39,12 +40,12 @@ public class PresetDAO: IPresetDAO
     public async Task<Preset> UpdateAsync(int presetId, Preset updatedPreset)
     {
         var preset = await _dataContext.Presets.FindAsync(presetId);
-    
+
         if (preset == null)
         {
             throw new ArgumentException("Preset not found");
         }
-    
+
         // Update the preset properties with the new values
         preset.Name = updatedPreset.Name;
         preset.MinHumidity = updatedPreset.MinHumidity;
@@ -56,9 +57,9 @@ public class PresetDAO: IPresetDAO
         preset.Servo = updatedPreset.Servo;
         preset.DeviceId = updatedPreset.DeviceId;
         // ... update other properties as needed
-    
+
         await _dataContext.SaveChangesAsync();
-    
+
         return preset;
     }
 
@@ -70,4 +71,13 @@ public class PresetDAO: IPresetDAO
         await _dataContext.SaveChangesAsync();
         return null!;
     }
+
+    public async Task<Preset> GetLastPresetByDeviceIdAsync(int deviceId)
+    {
+        return await _dataContext.Presets
+            .Where(p => p.DeviceId == deviceId)
+            .OrderByDescending(p => p.Id)
+            .FirstOrDefaultAsync();
+    }
+
 }

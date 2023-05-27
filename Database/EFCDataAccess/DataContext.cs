@@ -35,8 +35,23 @@ public class DataContext : DbContext
             .WithMany(d => d.Presets)
             .HasForeignKey(p => p.DeviceId);
 
+        // Set the default behavior for DateTime properties to use UTC
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime))
+                {
+                    modelBuilder.Entity(entityType.Name)
+                        .Property<DateTime>(property.Name)
+                        .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+                }
+            }
+        }
+
         // Other entity configurations
 
         base.OnModelCreating(modelBuilder);
     }
+
 }
