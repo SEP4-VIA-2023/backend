@@ -18,6 +18,7 @@ namespace EFCDataAccess.DAOs
         {
             // Convert the DateTime value to UTC
             measurement.Time = measurement.Time.ToUniversalTime();
+            //check if the device existsz
 
             EntityEntry<Measurement> entityEntry = _dataContext.Measurements.Add(measurement);
             await _dataContext.SaveChangesAsync();

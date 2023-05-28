@@ -84,7 +84,7 @@ namespace WebSockets.Gateway
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    Preset preset = await _presetDao.GetLastPresetByDeviceIdAsync(1);
+                    Preset preset = await _presetDao.GetActivePresetAsync(1);
                     await SendDataAsync(preset);
                     await Task.Delay(TimeSpan.FromMinutes(4), _cancellationTokenSource.Token);
                 }
@@ -149,11 +149,11 @@ namespace WebSockets.Gateway
                 var stringD = measurement["data"].Value<string>();
 
                 // Create the DateTime object with DateTimeKind.Local
-                
+
 
                 var measurements = new Measurement(
                     0,
-                    DateTime.Now.AddHours(2), 
+                    DateTime.Now.AddHours(2),
                     mscontroller.GetHumidity(stringD),
                     mscontroller.GetCO2(stringD),
                     mscontroller.GetTemperature(stringD),
@@ -172,7 +172,6 @@ namespace WebSockets.Gateway
                 }
             }
         }
-
 
 
         public async Task SendDataAsync(Preset preset)

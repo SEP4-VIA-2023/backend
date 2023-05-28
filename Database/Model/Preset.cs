@@ -24,7 +24,7 @@ public class Preset
     public int Servo { get; set; }
 
     public int? DeviceId { get; set; }
-
+    public bool isActive { get; set; } = false;
     public IOTDevice? Device { get; set; }
 
     public Preset(int id, string name, int minHumidity, int maxHumidity, int minCo2, int maxCo2, int minTemperature,
@@ -41,6 +41,7 @@ public class Preset
         Servo = servo;
         DeviceId = deviceId;
     }
+
     public override string ToString()
     {
         StringBuilder sb = new StringBuilder();
@@ -56,7 +57,7 @@ public class Preset
         sb.AppendLine($"DeviceId: {DeviceId}");
         return sb.ToString();
     }
-    
+
 
     private Preset()
     {

@@ -95,6 +95,7 @@ namespace APIs
 
             Preset press = await _presetDao.CreateAsync(temp);
         }
+
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeletePreset(int id)
         {
@@ -118,6 +119,29 @@ namespace APIs
                 return StatusCode(500, e.Message);
             }
         }
-  
+
+        [HttpPut("activate/{id}"), Authorize]
+        public async Task<IActionResult> ActivatePreset(int id)
+        {
+            try
+            {
+                // Check if the preset exists
+                var existingPreset = await _presetDao.GetByIdAsync(id);
+                if (existingPreset == null)
+                {
+                    return NotFound("Preset not found");
+                }
+
+                // Activate the preset
+                await _presetDao.ActivatePresetAsync(id);
+
+                // Return a response indicating the deletion was successful
+                return Ok("Preset activated successfully");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

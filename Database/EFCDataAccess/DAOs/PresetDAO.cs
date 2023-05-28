@@ -15,10 +15,21 @@ public class PresetDAO : IPresetDAO
 
     public async Task<Preset> CreateAsync(Preset preset)
     {
+        // Check if the preset with the same name already exists
+        bool presetExists = await _dataContext.Presets.AnyAsync(u =>
+            u.Name.ToLower() == preset.Name.ToLower()
+        );
+
+        if (presetExists)
+        {
+            throw new InvalidOperationException("A preset with the same name already exists.");
+        }
+
         EntityEntry<Preset> entry = _dataContext.Presets.Add(preset);
         await _dataContext.SaveChangesAsync();
         return entry.Entity;
     }
+
 
     public async Task<Preset?> GetByIdAsync(int id)
     {
@@ -80,4 +91,33 @@ public class PresetDAO : IPresetDAO
             .FirstOrDefaultAsync();
     }
 
+    public async Task<Preset> ActivatePresetAsync(int id)
+    {
+        // Get the preset to activate
+        Preset presetToActivate = await _dataContext.Presets.FindAsync(id);
+
+        if (presetToActivate == null)
+        {
+            throw new InvalidOperationException("Preset not found.");
+            // You can choose to return a specific error response or handle the exception as per your application's requirements.
+        }
+
+        // Deactivate any currently active preset
+        Preset activePreset = await _dataContext.Presets.FirstOrDefaultAsync(p => p.isActive);
+        if (activePreset != null)
+        {
+            activePreset.isActive = false;
+        }
+
+        // Activate the selected preset
+        presetToActivate.isActive = true;
+
+        await _dataContext.SaveChangesAsync();
+        return presetToActivate;
+    }
+
+    public async Task<Preset> GetActivePresetAsync(int deviceId)
+    {
+        return await _dataContext.Presets.FirstOrDefaultAsync(p => p.DeviceId == deviceId && p.isActive);
+    }
 }
