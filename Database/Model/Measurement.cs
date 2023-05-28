@@ -20,8 +20,9 @@ public class Measurement
     public int? DeviceId { get; set; }
 
     public IOTDevice? Device { get; set; }
-
+    
     public Measurement(int id,DateTime time, int humidity, int co2, int temperature,int servoStatus, int? deviceId)
+
     {
         Id = id;
     
@@ -32,10 +33,13 @@ public class Measurement
         ServoStatus = servoStatus;
         DeviceId = deviceId;
     }
-    private Measurement()
+    public Measurement()
     {
         
     }
+
+   
+
     public override string ToString()
     {
         return $"Measurement ID: {Id}\nTime: {Time}\nHumidity: {Humidity}\nCO2: {Co2}\nTemperature: {Temperature}\nServo Status: {ServoStatus}\nDevice ID: {DeviceId}";
