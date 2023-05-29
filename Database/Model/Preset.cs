@@ -28,7 +28,7 @@ public class Preset
     public IOTDevice? Device { get; set; }
 
     public Preset(int id, string name, int minHumidity, int maxHumidity, int minCo2, int maxCo2, int minTemperature,
-        int maxTemperature, int servo, int? deviceId)
+        int maxTemperature, int servo, int? deviceId, bool isActive)
     {
         Id = id;
         Name = name;
@@ -40,6 +40,7 @@ public class Preset
         MaxTemperature = maxTemperature;
         Servo = servo;
         DeviceId = deviceId;
+       this.isActive = isActive;
     }
 
     public override string ToString()
