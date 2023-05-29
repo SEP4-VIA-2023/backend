@@ -12,5 +12,4 @@ public class PresetDTO
     public int MaxTemperature { get; set; }
     public int Servo { get; set; }
     public int DeviceId { get; set; }
-    public bool isActive { get; set; }
 }

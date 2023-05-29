@@ -60,8 +60,7 @@ namespace APIs
                     presetDTO.MinTemperature,
                     presetDTO.MaxTemperature,
                     presetDTO.Servo,
-                    presetDTO.DeviceId,
-                    presetDTO.isActive
+                    presetDTO.DeviceId
                 );
 
                 await _presetDao.UpdateAsync(id, preset);
@@ -89,12 +88,10 @@ namespace APIs
                 minTemperature = preset.MinTemperature,
                 maxTemperature = preset.MaxTemperature,
                 servo = preset.Servo,
-                deviceId = preset.DeviceId,
-                isActive = preset.isActive
+                deviceId = preset.DeviceId
             };
             var temp = new Preset(preset.Id, preset.Name, preset.MinHumidity, preset.MaxHumidity, preset.MinCo2,
-                preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId,
-                preset.isActive);
+                preset.MaxCo2, preset.MinTemperature, preset.MaxTemperature, preset.Servo, preset.DeviceId);
 
             Preset press = await _presetDao.CreateAsync(temp);
         }
