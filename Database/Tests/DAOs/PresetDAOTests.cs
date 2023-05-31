@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EFCDataAccess;
 using EFCDataAccess.DAOs;
 using Microsoft.EntityFrameworkCore;
 using Model;
-using NUnit.Framework;
 
-namespace YourNamespace.Tests
-{
     [TestFixture]
     public class PresetDAOTests
     {
@@ -35,11 +28,33 @@ namespace YourNamespace.Tests
         }
         
 
+[Test]
+public async Task GetByIdAsync_ReturnsExistingPreset()
+{
+    // Arrange
+   
+    using (var context = new DataContext())
+    {
+        var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
+        context.Presets.Add(preset);
+        context.SaveChanges();
+        var repository = new PresetDAO(context);
+
+        // Act
+        var result = await repository.GetByIdAsync(1);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual(preset.Id, result.Id);
+    }
+}
+
+
         [Test]
         public async Task GetByIdAsync_WhenPresetExists_ShouldReturnPreset()
         {
             // Arrange
-            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
             _dataContext.Presets.Add(preset);
             await _dataContext.SaveChangesAsync();
 
@@ -138,11 +153,11 @@ namespace YourNamespace.Tests
         public async Task UpdateAsync_WhenPresetExists_ShouldUpdateAndReturnPreset()
         {
             // Arrange
-            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
             _dataContext.Presets.Add(preset);
             await _dataContext.SaveChangesAsync();
 
-            var updatedPreset = new Preset(1, "Preset1", 100, 400, 100, 2300, 10, 30, 50, 1);
+            var updatedPreset = new Preset(1, "Preset1", 100, 400, 100, 2300, 10, 30, 50, 1, false);
 
             // Act
             var updated = await _presetDAO.UpdateAsync(preset.Id, updatedPreset);
@@ -160,7 +175,7 @@ namespace YourNamespace.Tests
             // Arrange
             var presetId = 123; // Assuming an ID that doesn't exist
 
-            var updatedPreset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 0);
+            var updatedPreset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 0, false);
 
             // Act and Assert
             Assert.ThrowsAsync<ArgumentException>(async () => await _presetDAO.UpdateAsync(presetId, updatedPreset));
@@ -170,7 +185,7 @@ namespace YourNamespace.Tests
         public async Task DeleteAsync_WhenPresetExists_ShouldDeleteAndReturnNull()
         {
             // Arrange
-            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
             
             _dataContext.Presets.Add(preset);
             await _dataContext.SaveChangesAsync();
@@ -194,8 +209,8 @@ namespace YourNamespace.Tests
 
             var presets = new List<Preset>
             {
-                new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1),
-                new Preset(2, "Pipireset1", 100, 400, 100, 2000, 10, 30, 50, 1)
+                new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false),
+                new Preset(2, "Pipireset1", 100, 400, 100, 2000, 10, 30, 50, 1, false)
 
             };
             _dataContext.Presets.AddRange(presets);
@@ -229,7 +244,7 @@ namespace YourNamespace.Tests
         public async Task ActivatePresetAsync_WhenPresetExists_ShouldActivateAndReturnPreset()
         {
             // Arrange
-            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var preset = new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
             _dataContext.Presets.Add(preset);
             await _dataContext.SaveChangesAsync();
 
@@ -258,9 +273,9 @@ namespace YourNamespace.Tests
             // Arrange
             var deviceId = 1; // Assuming a device ID
             
-            var activePipireset =  new Preset(2, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var activePipireset =  new Preset(2, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
 
-            var activePreset =  new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1);
+            var activePreset =  new Preset(1, "Preset1", 100, 400, 100, 2000, 10, 30, 50, 1, false);
             _dataContext.Presets.Add(activePreset);
             _dataContext.Presets.Add(activePipireset);
             await _dataContext.SaveChangesAsync();
@@ -289,5 +304,4 @@ namespace YourNamespace.Tests
         }
     }
 
-        // Add more test methods for other methods in PresetDAO
-    }
+        
