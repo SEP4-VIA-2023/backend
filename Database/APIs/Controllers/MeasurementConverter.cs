@@ -16,7 +16,7 @@ public class MeasurementConverter
         }
         catch (FormatException)
         {
-            throw new ArgumentException("Invalid data format. The input data must be a hexadecimal string.");
+            throw new FormatException("Invalid data format. The input data must be a hexadecimal string.");
         }
         catch (IndexOutOfRangeException)
         {
@@ -40,7 +40,7 @@ public class MeasurementConverter
         }
         catch (FormatException)
         {
-            throw new ArgumentException("Invalid data format. The input data must be a hexadecimal string.");
+            throw new FormatException("Invalid data format. The input data must be a hexadecimal string.");
         }
         catch (IndexOutOfRangeException)
         {
@@ -64,7 +64,7 @@ public class MeasurementConverter
         }
         catch (FormatException)
         {
-            throw new ArgumentException("Invalid data format. The input data must be a hexadecimal string.");
+            throw new FormatException("Invalid data format. The input data must be a hexadecimal string.");
         }
         catch (IndexOutOfRangeException)
         {
@@ -88,9 +88,9 @@ public class MeasurementConverter
         }
         catch (FormatException)
         {
-            throw new ArgumentException("Invalid data format. The input data must be a hexadecimal string.");
+            throw new FormatException("Invalid data format. The input data must be a hexadecimal string.");
         }
-        catch (IndexOutOfRangeException)
+        catch (ArgumentOutOfRangeException)
         {
             throw new ArgumentException("Invalid data length. The input data length must be even and sufficient for extracting servo status.");
         }
