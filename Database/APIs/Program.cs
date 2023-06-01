@@ -72,17 +72,5 @@ string url = "wss://iotnet.cibicom.dk/app?token=vnoUBQAAABFpb3RuZXQuY2liaWNvbS5k
 Console.WriteLine(DateTime.Now.AddHours(2).ToString("h:mm:ss tt") + " - Websocket connection has been opened.");
 wbclient.ConnectAsync(url);
 
-/*ConfigService cfg = new ConfigService();
-
-ushort minCO2 = await cfg.GetMinCO2Value();
-ushort maxCO2 = await cfg.GetMaxCO2Value();
-ushort minHumidity = await cfg.GetMinHumidityValue();
-ushort maxHumidity = await cfg.GetMaxHumidityValue();
-short minTemp = await cfg.GetMinTempValue();
-short maxTemp = await cfg.GetMaxTempValue();
-sbyte rotationPercentage = await cfg.GetRotationPercentageValue();
-
-
-*/
 
 app.Run();
